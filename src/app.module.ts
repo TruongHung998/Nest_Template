@@ -4,9 +4,13 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { UserModule } from "./user/user.module";
+import { StatefulModule } from "./stateful/stateful.module";
+import { StatelessModule } from "./stateless/stateless.module";
 @Module({
   imports: [
     UserModule,
+    StatefulModule,
+    StatelessModule,
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
