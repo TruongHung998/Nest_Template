@@ -78,4 +78,12 @@ export class UserService {
       return e;
     }
   }
+  findByEmail(username: string) : Object {
+    return {
+      password: ''
+    }
+  }
+  checkPassword(pass: string, userPassword: string) : Boolean {
+    return false
+  }
 }
