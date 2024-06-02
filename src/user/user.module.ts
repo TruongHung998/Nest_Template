@@ -12,11 +12,7 @@ import { JwtAuthGuard } from "@/auth/jwt-auth.guard";
   ],
   controllers: [UserController],
   providers: [
-    UserService,
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
+    UserService
   ],
   exports: [UserService],
 })
