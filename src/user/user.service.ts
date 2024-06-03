@@ -3,13 +3,16 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { User } from "./schemas/user.schema";
+import { User, UserDocument } from "./schemas/user.schema";
 import { genSaltSync, hashSync, compareSync } from "bcryptjs";
 import { log } from "console";
+import { SoftDeleteModel } from "soft-delete-plugin-mongoose";
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: SoftDeleteModel<UserDocument>
+  ) {}
 
   checkMatch(id) {
     return id.match(/^[0-9a-fA-F]{24}$/);
@@ -68,7 +71,7 @@ export class UserService {
   async remove(id: string) {
     try {
       if (this.checkMatch(id)) {
-        return await this.userModel.deleteOne({ _id: id });
+        return await this.userModel.softDelete({ _id: id });
       } else {
         return {
           message: "Không tìm thấy người dùng",
@@ -79,7 +82,7 @@ export class UserService {
     }
   }
   findByEmail(username: string) {
-    const _find = this.userModel.findOne({ email: username });    
+    const _find = this.userModel.findOne({ email: username });
     return _find;
   }
   checkPassword(pass: string, userPassword: string): Boolean {
