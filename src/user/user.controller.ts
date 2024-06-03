@@ -13,11 +13,12 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { AuthGuard } from "@/auth/auth.guard";
 import { JwtAuthGuard } from "@/auth/jwt-auth.guard";
+import { Public } from "@/decorator/customize";
 
 @Controller("user")
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
+  @Public()
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
