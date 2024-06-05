@@ -35,9 +35,7 @@ export class CompaniesService {
     return `This action returns a #${id} company`;
   }
 
-  async update(id: number, updateCompanyDto: UpdateCompanyDto, user) {
-    console.log(id, "id");
-
+  async update(id: string, updateCompanyDto: UpdateCompanyDto, user: IUser) {
     try {
       if (this.checkMatch(id)) {
         return await this.companyModel.updateOne(
@@ -62,7 +60,29 @@ export class CompaniesService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} company`;
+  async remove(id: string, user: IUser) {
+    try {
+      if (this.checkMatch(id)) {
+        await this.companyModel.softDelete({ _id: id });
+        await this.companyModel.updateOne(
+          { _id: id },
+          {
+            deletedBy: {
+              _id: user._id,
+              mail: user.email,
+            },
+          }
+        );
+        return {
+          success: true,
+        };
+      } else {
+        return {
+          message: "Không tìm thấy công ty",
+        };
+      }
+    } catch (e) {
+      return e;
+    }
   }
 }
