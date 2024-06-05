@@ -1,21 +1,18 @@
+import { Public } from "@/decorator/customize";
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
+  Get,
+  Param,
+  Patch,
+  Post
 } from "@nestjs/common";
-import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { AuthGuard } from "@/auth/auth.guard";
-import { JwtAuthGuard } from "@/auth/jwt-auth.guard";
-import { Public } from "@/decorator/customize";
+import { UserService } from "./user.service";
 
-@Controller("user")
+@Controller("users")
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Public()
@@ -28,6 +25,7 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  @Public()
   @Get(":id")
   findOne(@Param("id") id: number) {
     console.log(id, "id");
