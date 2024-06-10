@@ -1,12 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Query } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import aqp from "api-query-params";
+import { compareSync, genSaltSync, hashSync } from "bcryptjs";
+import { SoftDeleteModel } from "soft-delete-plugin-mongoose";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
 import { User, UserDocument } from "./schemas/user.schema";
-import { genSaltSync, hashSync, compareSync } from "bcryptjs";
-import { log } from "console";
-import { SoftDeleteModel } from "soft-delete-plugin-mongoose";
 
 @Injectable()
 export class UserService {
@@ -34,8 +33,30 @@ export class UserService {
     return _user;
   }
 
-  findAll() {
-    return this.userModel.find();
+  async findAll(@Query() qs: string) {
+    try {
+      const { filter, projection, population, limit } = aqp(qs);
+      const { page } = filter;
+      let offset = (+page - 1) * +limit;
+      let defaultLimit = +limit ? +limit : 10;
+      delete filter.page;
+      const totalItems = (await this.userModel.find(filter)).length;
+      const totalPages = Math.ceil(totalItems / defaultLimit);
+      const result = await this.userModel
+        .find(filter)
+        .skip(offset)
+        .limit(defaultLimit)
+        // @ts-ignore: Unreachable code error .sort(sort)
+        .populate(population)
+        .exec();
+      return {
+        length: result.length,
+        totalPages,
+        result,
+      };
+    } catch (e) {
+      return e;
+    }
   }
 
   findOne(id: number | string) {

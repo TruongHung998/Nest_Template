@@ -1,4 +1,4 @@
-import { Public } from "@/decorator/customize";
+import { Public, ResponseMessage } from "@/decorator/customize";
 import {
   Body,
   Controller,
@@ -6,7 +6,8 @@ import {
   Get,
   Param,
   Patch,
-  Post
+  Post,
+  Query,
 } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
@@ -21,8 +22,9 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  @ResponseMessage("Kết quả thành công")
+  findAll(@Query() qs: string) {
+    return this.userService.findAll(qs);
   }
 
   @Public()
