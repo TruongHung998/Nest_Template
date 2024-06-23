@@ -4,7 +4,7 @@ import { CreateCompanyDto } from "./dto/create-company.dto";
 import { UpdateCompanyDto } from "./dto/update-company.dto";
 import { InjectModel } from "@nestjs/mongoose";
 import { IUser } from "@/user/users.interface";
-import { Company, CompanyDocument } from "./schema/company.entity";
+import { Company, CompanyDocument } from "./schema/company.schema";
 
 @Injectable()
 export class CompaniesService {
