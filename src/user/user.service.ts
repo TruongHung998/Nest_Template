@@ -1,9 +1,9 @@
-import { Injectable, Query } from "@nestjs/common";
+import { BadRequestException, Injectable, Query } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import aqp from "api-query-params";
 import { compareSync, genSaltSync, hashSync } from "bcryptjs";
 import { SoftDeleteModel } from "soft-delete-plugin-mongoose";
-import { CreateUserDto } from "./dto/create-user.dto";
+import { RegisterUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { User, UserDocument } from "./schemas/user.schema";
 
@@ -23,12 +23,30 @@ export class UserService {
     return hash;
   }
 
-  async create(createUserDto: CreateUserDto) {    
-    const _hash = this.getHashPassword(createUserDto.password);
+  async create(RegisterUserDto: RegisterUserDto) {
+    const _hash = this.getHashPassword(RegisterUserDto.password);
 
     const _user = await this.userModel.create({
-      ...createUserDto,
+      ...RegisterUserDto,
       password: _hash,
+    });
+    return _user;
+  }
+  async register(user: RegisterUserDto) {
+    const { name, email, password, age, gender, address } = user;
+    const _hash = this.getHashPassword(password);
+    const isExist = await this.userModel.findOne({ email });
+    if (isExist) {
+      throw new BadRequestException("Email đã tồn tại");
+    }
+    const _user = await this.userModel.create({
+      name,
+      email,
+      age,
+      gender,
+      address,
+      password: _hash,
+      role: "USER",
     });
     return _user;
   }

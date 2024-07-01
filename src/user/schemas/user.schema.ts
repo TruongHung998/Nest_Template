@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { IsEmail } from "class-validator";
-import mongoose, { HydratedDocument } from "mongoose";
+import mongoose, { HydratedDocument, SchemaTimestampsConfig } from "mongoose";
 
-export type UserDocument = HydratedDocument<User>;
+export type UserDocument = HydratedDocument<User> & SchemaTimestampsConfig;
 
 @Schema({ timestamps: true })
 export class User {

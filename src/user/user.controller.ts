@@ -9,7 +9,7 @@ import {
   Post,
   Query,
 } from "@nestjs/common";
-import { CreateUserDto } from "./dto/create-user.dto";
+import { RegisterUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { UserService } from "./user.service";
 
@@ -18,8 +18,8 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
   @Public()
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  create(@Body() RegisterUserDto: RegisterUserDto) {
+    return this.userService.create(RegisterUserDto);
   }
   @Get()
   @ResponseMessage("Kết quả thành công")

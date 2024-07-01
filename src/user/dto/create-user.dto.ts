@@ -16,9 +16,7 @@ class Company {
   name: string;
 }
 
-export class RegisterUserDto {}
-
-export class CreateUserDto {
+export class RegisterUserDto {
   @IsNotEmpty({ message: "Name không được để trống" })
   name: string;
 
