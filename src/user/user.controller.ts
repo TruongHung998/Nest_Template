@@ -18,7 +18,7 @@ import { IUser } from "./users.interface";
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Post()
-  @ResponseMessage('Create a new User')
+  @ResponseMessage('Tạo người dùng thành công')
   create(@Body() RegisterUserDto: RegisterUserDto, @User() user: IUser) {
     return this.userService.create(RegisterUserDto, user);
   }
@@ -31,14 +31,13 @@ export class UserController {
   @Public()
   @Get(":id")
   findOne(@Param("id") id: number) {
-    console.log(id, "id");
-
     return this.userService.findOne(id);
   }
 
   @Patch()
-  update(@Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(updateUserDto);
+  @ResponseMessage("Cập nhật người dùng thành công")
+  update(@Body() updateUserDto: UpdateUserDto, @User() user: IUser) {
+    return this.userService.update(updateUserDto, user);
   }
   @Public()
   @Delete(":id")

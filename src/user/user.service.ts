@@ -103,13 +103,17 @@ export class UserService {
     }
   }
 
-  async update(updateUserDto: UpdateUserDto) {
+  async update(updateUserDto: UpdateUserDto, user: IUser) {
     try {
       if (this.checkMatch(updateUserDto._id)) {
         return await this.userModel.updateOne(
           { _id: updateUserDto._id },
           {
             ...updateUserDto,
+            updatedBy: {
+              _id: user._id,
+              email: user.email,
+            }
           }
         );
       } else {
