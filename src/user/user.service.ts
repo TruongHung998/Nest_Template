@@ -6,6 +6,7 @@ import { SoftDeleteModel } from "soft-delete-plugin-mongoose";
 import { RegisterUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { User, UserDocument } from "./schemas/user.schema";
+import { IUser } from "./users.interface";
 
 @Injectable()
 export class UserService {
@@ -23,12 +24,26 @@ export class UserService {
     return hash;
   }
 
-  async create(RegisterUserDto: RegisterUserDto) {
-    const _hash = this.getHashPassword(RegisterUserDto.password);
-
+  async create(RegisterUserDto: RegisterUserDto, user: IUser) {
+    console.log(user, 'user')
+    const { name, email, password, age, gender, address } = RegisterUserDto;
+    const _hash = this.getHashPassword(password);
+    const isExist = await this.userModel.findOne({ email });
+    if (isExist) {
+      throw new BadRequestException(`Email ${email} đã tồn tại`);
+    }
     const _user = await this.userModel.create({
-      ...RegisterUserDto,
+      name,
+      email,
+      age,
+      gender,
+      address,
       password: _hash,
+      role: "USER",
+      createdBy: {
+        _id: user._id,
+        email: user.email,
+      },
     });
     return _user;
   }
@@ -37,7 +52,7 @@ export class UserService {
     const _hash = this.getHashPassword(password);
     const isExist = await this.userModel.findOne({ email });
     if (isExist) {
-      throw new BadRequestException("Email đã tồn tại");
+      throw new BadRequestException(`Email ${email} đã tồn tại`);
     }
     const _user = await this.userModel.create({
       name,
@@ -120,8 +135,9 @@ export class UserService {
       return e;
     }
   }
-  findByEmail(username: string) {
-    const _find = this.userModel.findOne({ email: username });
+  findByEmail(email: string) {
+    console.log(email, 'email');
+    const _find = this.userModel.findOne({ email });
     return _find;
   }
   checkPassword(pass: string, userPassword: string): Boolean {

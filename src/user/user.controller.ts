@@ -1,4 +1,4 @@
-import { Public, ResponseMessage } from "@/decorator/customize";
+import { Public, ResponseMessage, User } from "@/decorator/customize";
 import {
   Body,
   Controller,
@@ -12,14 +12,15 @@ import {
 import { RegisterUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { UserService } from "./user.service";
+import { IUser } from "./users.interface";
 
 @Controller("users")
 export class UserController {
   constructor(private readonly userService: UserService) {}
-  @Public()
   @Post()
-  create(@Body() RegisterUserDto: RegisterUserDto) {
-    return this.userService.create(RegisterUserDto);
+  @ResponseMessage('Create a new User')
+  create(@Body() RegisterUserDto: RegisterUserDto, @User() user: IUser) {
+    return this.userService.create(RegisterUserDto, user);
   }
   @Get()
   @ResponseMessage("Kết quả thành công")
