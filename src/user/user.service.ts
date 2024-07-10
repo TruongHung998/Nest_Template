@@ -25,7 +25,7 @@ export class UserService {
   }
 
   async create(RegisterUserDto: RegisterUserDto, user: IUser) {
-    console.log(user, 'user')
+    console.log(user, "user");
     const { name, email, password, age, gender, address } = RegisterUserDto;
     const _hash = this.getHashPassword(password);
     const isExist = await this.userModel.findOne({ email });
@@ -95,7 +95,9 @@ export class UserService {
 
   findOne(id: number | string) {
     if (this.checkMatch(id)) {
-      const _find = this.userModel.findById(id).select("-password");
+      const _find = this.userModel
+        .findById(id)
+        .select(["-password", "-refreshToken"]);
       return _find;
     } else {
       return {
@@ -114,7 +116,7 @@ export class UserService {
             updatedBy: {
               _id: user._id,
               email: user.email,
-            }
+            },
           }
         );
       } else {
@@ -141,11 +143,22 @@ export class UserService {
     }
   }
   findByEmail(email: string) {
-    console.log(email, 'email');
     const _find = this.userModel.findOne({ email });
     return _find;
   }
   checkPassword(pass: string, userPassword: string): Boolean {
     return compareSync(pass, userPassword);
+  }
+  async updateUserToken(refreshToken: string, _id: string) {
+    try {
+      return await this.userModel.updateOne(
+        { _id: _id },
+        {
+          refreshToken: refreshToken,
+        }
+      );
+    } catch (e) {
+      return e;
+    }
   }
 }

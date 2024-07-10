@@ -2,6 +2,7 @@ import { NestFactory, Reflector } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { ValidationPipe, VersioningType } from "@nestjs/common";
 import { TransformInterceptor } from "./core/transform.interceptor";
+import cookieParser = require("cookie-parser");
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,6 +11,7 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalInterceptors(new TransformInterceptor(reflector));
   app.setGlobalPrefix('api')
+  app.use(cookieParser())
   app.enableVersioning({
     defaultVersion: ['1', '2'],
     type: VersioningType.URI
