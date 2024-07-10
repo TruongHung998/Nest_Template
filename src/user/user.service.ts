@@ -79,6 +79,7 @@ export class UserService {
         .find(filter)
         .skip(offset)
         .limit(defaultLimit)
+        .select("-password")
         // @ts-ignore: Unreachable code error .sort(sort)
         .populate(population)
         .exec();
@@ -94,7 +95,7 @@ export class UserService {
 
   findOne(id: number | string) {
     if (this.checkMatch(id)) {
-      const _find = this.userModel.findById(id);
+      const _find = this.userModel.findById(id).select("-password");
       return _find;
     } else {
       return {

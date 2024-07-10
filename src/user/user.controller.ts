@@ -18,28 +18,29 @@ import { IUser } from "./users.interface";
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Post()
-  @ResponseMessage('Tạo người dùng thành công')
+  @ResponseMessage('Create User')
   create(@Body() RegisterUserDto: RegisterUserDto, @User() user: IUser) {
     return this.userService.create(RegisterUserDto, user);
   }
   @Get()
-  @ResponseMessage("Kết quả thành công")
+  @ResponseMessage("Get all user")
   findAll(@Query() qs: string) {
     return this.userService.findAll(qs);
   }
 
   @Public()
   @Get(":id")
+  @ResponseMessage("Get user by id")
   findOne(@Param("id") id: number) {
     return this.userService.findOne(id);
   }
 
   @Patch()
-  @ResponseMessage("Cập nhật người dùng thành công")
+  @ResponseMessage("Update user")
   update(@Body() updateUserDto: UpdateUserDto, @User() user: IUser) {
     return this.userService.update(updateUserDto, user);
   }
-  @Public()
+  @ResponseMessage("Delete User")
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.userService.remove(id);
