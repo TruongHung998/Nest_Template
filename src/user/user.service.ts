@@ -105,6 +105,12 @@ export class UserService {
       };
     }
   }
+  findByToken(token: string) {
+    const _find = this.userModel
+      .findOne({ refreshToken: token })
+      .select(["-password", "-refreshToken"]);
+    return _find;
+  }
 
   async update(updateUserDto: UpdateUserDto, user: IUser) {
     try {

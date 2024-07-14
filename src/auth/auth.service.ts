@@ -1,11 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { UserService } from "@/user/user.service";
 import { JwtService } from "@nestjs/jwt";
 import { IUser } from "@/user/users.interface";
 import { RegisterUserDto } from "@/user/dto/create-user.dto";
 import { ConfigService } from "@nestjs/config";
 import ms from "ms";
-import { Response } from "express";
+import { Response, Request } from "express";
 @Injectable()
 export class AuthService {
   constructor(
@@ -64,6 +64,38 @@ export class AuthService {
     return refreshToken;
   };
   async findOneUSer(_id: string) {
-    return this.usersService.findOne(_id)
+    return this.usersService.findOne(_id);
+  }
+  async findUserByToken(token: string) {
+    return this.usersService.findByToken(token);
+  }
+  async processNewToken(req: Request, response: Response) {
+    try {
+      const _refreshToken = req.cookies["refreshToken"];
+      const _validate = this.jwtService.verify(_refreshToken, {
+        secret: this.configService.get<string>("JWT_REFRESH_SECRET"),
+      });
+      if (_validate) {
+        const _user = await this.findUserByToken(_refreshToken);
+        const { _id, role, email } = _user;
+        const _iUser: IUser = {
+          _id: _id.toString(),
+          role,
+          email,
+        };
+        if (_user) {
+          return this.login(_iUser, response);
+        } else {
+          throw new BadRequestException("Không tìm thấy người dùng");
+        }
+      }
+      return {
+        refreshToken: _refreshToken,
+      };
+    } catch (errors) {
+      throw new BadRequestException(
+        `RefreshToken không hợp lệ. vui lòng login`
+      );
+    }
   }
 }

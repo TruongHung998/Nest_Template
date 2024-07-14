@@ -9,9 +9,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     super();
   }
 
-  async validate(email: string, password: string): Promise<any> {
-    console.log(email, 'email');
-          
+  async validate(email: string, password: string): Promise<any> {          
     const user = await this.authService.validateUser(email, password);        
     if (!user) {      
       throw new UnauthorizedException('Tên đăng nhập hoạc mật khẩu không hợp lệ');

@@ -39,4 +39,13 @@ export class AuthController {
   async account(@User() user: IUser) {
     return this.authService.findOneUSer(user._id);
   }
+  @Public()
+  @Get("/refresh")
+  @ResponseMessage("Refresh Token")
+  async refreshToken(
+    @Request() req,
+    @Res({ passthrough: true }) response: Response
+  ) {
+    return this.authService.processNewToken(req, response);
+  }
 }
