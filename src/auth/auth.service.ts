@@ -6,6 +6,7 @@ import { RegisterUserDto } from "@/user/dto/create-user.dto";
 import { ConfigService } from "@nestjs/config";
 import ms from "ms";
 import { Response, Request } from "express";
+import { use } from "passport";
 @Injectable()
 export class AuthService {
   constructor(
@@ -98,5 +99,10 @@ export class AuthService {
         `RefreshToken không hợp lệ. vui lòng login`
       );
     }
+  }
+  async logout(user: IUser, response: Response) {
+    await this.usersService.updateUserToken(null, user._id)
+    response.clearCookie("refreshToken")
+    return "Success"
   }
 }
