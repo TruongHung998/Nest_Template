@@ -1,10 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Query } from "@nestjs/common";
 import { SoftDeleteModel } from "soft-delete-plugin-mongoose";
 import { CreateCompanyDto } from "./dto/create-company.dto";
 import { UpdateCompanyDto } from "./dto/update-company.dto";
 import { InjectModel } from "@nestjs/mongoose";
 import { IUser } from "@/user/users.interface";
 import { Company, CompanyDocument } from "./schema/company.schema";
+import aqp from "api-query-params";
 
 @Injectable()
 export class CompaniesService {
@@ -27,12 +28,41 @@ export class CompaniesService {
     return _create;
   }
 
-  findAll() {
-    return `This action returns all companies`;
+  async findAll(@Query() qs: string) {
+    try {
+      const { filter, projection, population, limit } = aqp(qs);
+      const { page } = filter;
+      let offset = (+page - 1) * +limit;
+      let defaultLimit = +limit ? +limit : 10;
+      delete filter.page;
+      const totalItems = (await this.companyModel.find(filter)).length;
+      const totalPages = Math.ceil(totalItems / defaultLimit);
+      const result = await this.companyModel
+        .find(filter)
+        .skip(offset)
+        .limit(defaultLimit)
+        // @ts-ignore: Unreachable code error .sort(sort)
+        .populate(population)
+        .exec();
+      return {
+        length: result.length,
+        totalPages,
+        result,
+      };
+    } catch (e) {
+      return e;
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} company`;
+  findOne(id: string) {
+    if (this.checkMatch(id)) {
+      const _find = this.companyModel.findById(id);
+      return _find;
+    } else {
+      return {
+        message: "Không tìm thấy người dùng",
+      };
+    }
   }
 
   async update(id: string, updateCompanyDto: UpdateCompanyDto, user: IUser) {
