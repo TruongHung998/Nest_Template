@@ -80,12 +80,12 @@ export class JobsService {
         );
       } else {
         return {
-          message: "Không tìm thấy công ty",
+          message: "Không tìm thấy",
         };
       }
     } catch (e) {
       return {
-        message: "Không tìm thấy công ty",
+        message: "Không tìm thấy",
       };
     }
   }

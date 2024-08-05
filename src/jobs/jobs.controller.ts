@@ -8,14 +8,15 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Query,
 } from "@nestjs/common";
 import { CreateJobDto } from "./dto/create-Job.dto";
 import { UpdateJobDto } from "./dto/update-Job.dto";
 import { JobsService } from "./jobs.service";
 
-@Controller("companies")
-export class CompaniesController {
+@Controller("jobs")
+export class JobsController {
   constructor(private readonly jobsService: JobsService) {}
 
   @Post()
@@ -36,13 +37,14 @@ export class CompaniesController {
     return this.jobsService.findOne(id);
   }
 
-  @Patch(":id")
+  @Put(":id")
   @ResponseMessage("Update By Id")
   update(
     @Param("id") id: string,
     @Body() updateJobDto: UpdateJobDto,
     @User() user: IUser
   ) {
+    console.log(updateJobDto, 'updateJobDto');
     return this.jobsService.update(id, updateJobDto, user);
   }
 

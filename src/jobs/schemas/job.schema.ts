@@ -9,13 +9,13 @@ export class Job {
   name: string;
 
   @Prop()
-  skill: string;
+  skill: string[];
 
   @Prop()
   location: string;
 
   @Prop()
-  salary: string;
+  salary: number;
 
   @Prop()
   quantity: number;
