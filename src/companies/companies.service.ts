@@ -19,11 +19,19 @@ export class CompaniesService {
     return id.match(/^[0-9a-fA-F]{24}$/);
   }
   async create(createCompanyDto: CreateCompanyDto, user: IUser) {
+    console.log({
+      ...createCompanyDto,
+      createdBy: {
+        _id: user._id,
+        email: user.email,
+      },
+    });
+    
     const _create = await this.companyModel.create({
       ...createCompanyDto,
       createdBy: {
         _id: user._id,
-        mail: user.email,
+        email: user.email,
       },
     });
     return _create;

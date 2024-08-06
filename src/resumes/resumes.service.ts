@@ -1,12 +1,19 @@
 import { CompaniesService } from "@/companies/companies.service";
 import { JobsService } from "@/jobs/jobs.service";
 import { IUser } from "@/user/users.interface";
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, Query } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { SoftDeleteModel } from "soft-delete-plugin-mongoose";
 import { CreateResumeDto } from "./dto/create-resume.dto";
 import { UpdateResumeDto } from "./dto/update-resume.dto";
-import { Resume, ResumeDocument, STATUS_RESUME } from "./schema/resume.schema";
+import {
+  Resume,
+  ResumeDocument,
+  STATUS_RESUME,
+  statusEnum,
+} from "./schema/resume.schema";
+import aqp from "api-query-params";
+import { ObjectId } from "mongoose";
 
 @Injectable()
 export class ResumesService {
@@ -16,6 +23,9 @@ export class ResumesService {
     private companiesService: CompaniesService,
     private jobsService: JobsService
   ) {}
+  checkMatch(id) {
+    return id.match(/^[0-9a-fA-F]{24}$/);
+  }
 
   async create(createResumeDto: CreateResumeDto, user: IUser) {
     const _company = await this.companiesService.findOne(
@@ -30,38 +40,132 @@ export class ResumesService {
     }
     const _create = await this.resumeModel.create({
       ...createResumeDto,
-      status: STATUS_RESUME.reviewing,
+      status: statusEnum.REVIEWING,
       history: [
         {
           status: STATUS_RESUME.reviewing,
           updatedAt: new Date(),
           updatedBy: {
             _id: user._id,
-            mail: user.email,
+            email: user.email,
           },
         },
       ],
       createdBy: {
         _id: user._id,
-        mail: user.email,
+        email: user.email,
       },
     });
     return _create;
   }
 
-  findAll() {
-    return `This action returns all resumes`;
+  async findAll(@Query() qs: string) {
+    try {
+      const { filter, projection, population, limit } = aqp(qs);
+      const { page } = filter;
+      let offset = (+page - 1) * +limit;
+      let defaultLimit = +limit ? +limit : 10;
+      delete filter.page;
+      const totalItems = (await this.resumeModel.find(filter)).length;
+      const totalPages = Math.ceil(totalItems / defaultLimit);
+      const result = await this.resumeModel
+        .find(filter)
+        .skip(offset)
+        .limit(defaultLimit)
+        // @ts-ignore: Unreachable code error .sort(sort)
+        .populate(population)
+        .exec();
+      return {
+        length: result.length,
+        totalPages,
+        result,
+      };
+    } catch (e) {
+      return e;
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} resume`;
+  findOne(id: ObjectId | string) {
+    if (this.checkMatch(id)) {
+      const _find = this.resumeModel.findById(id);
+      return _find;
+    } else {
+      return {
+        message: "Không tìm thấy người dùng",
+      };
+    }
   }
 
-  update(id: number, updateResumeDto: UpdateResumeDto) {
-    return `This action updates a #${id} resume`;
+  async update(id: string, updateResumeDto: UpdateResumeDto, user: IUser) {
+    try {
+      if (this.checkMatch(id)) {
+        const _find = await this.resumeModel.findById(id);
+        if (_find) {
+          const _history = _find.history;
+          _history.push({
+            status: updateResumeDto.status,
+            updatedAt: new Date(),
+            updatedBy: {
+              _id: user._id,
+              email: user.email,
+            },
+          });
+          return await this.resumeModel.updateOne(
+            { _id: id },
+            {
+              ...updateResumeDto,
+              history: _history,
+              updatedBy: {
+                _id: user._id,
+                email: user.email,
+              },
+            }
+          );
+        } else {
+          return {
+            message: "Không tìm thấy",
+          };
+        }
+      } else {
+        return {
+          message: "Không tìm thấy",
+        };
+      }
+    } catch (e) {
+      return {
+        message: "Không tìm thấy",
+      };
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} resume`;
+  async remove(id: string, user: IUser) {
+    try {
+      if (this.checkMatch(id)) {
+        await this.resumeModel.softDelete({ _id: id });
+        await this.resumeModel.updateOne(
+          { _id: id },
+          {
+            deletedBy: {
+              _id: user._id,
+              mail: user.email,
+            },
+          }
+        );
+        return {
+          success: true,
+        };
+      } else {
+        return {
+          message: "Không tìm thấy công ty",
+        };
+      }
+    } catch (e) {
+      return e;
+    }
+  }
+
+  findByUser(id: string) {
+    const _find = this.resumeModel.find({ "createdBy._id": id });
+    return _find;
   }
 }

@@ -5,7 +5,6 @@ export type CompanyDocument = HydratedDocument<Company>;
 
 @Schema({ timestamps: true })
 export class Company {
-  @Prop()
   _id: mongoose.Schema.Types.ObjectId;
   @Prop()
   name: string;

@@ -10,18 +10,18 @@ export const STATUS_RESUME = {
   rejected: "REJECTED",
 };
 
-enum statusEnum {
-  PENDING,
-  APPROVED,
-  REVIEWING,
-  REJECTED,
+export enum statusEnum {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REVIEWING = "REVIEWING",
+  REJECTED = "REJECTED",
 }
 
 export class historyResumClass {
-  status: string;
+  status: statusEnum;
   updatedAt: Date;
   updatedBy: {
-    _id: mongoose.Schema.Types.ObjectId;
+    _id: mongoose.Schema.Types.ObjectId | string;
     email: string;
   };
 }
@@ -58,7 +58,7 @@ export class Resume {
   jobId: mongoose.Schema.Types.ObjectId;
 
   @Prop({ type: mongoose.Schema.Types.Array })
-  history: historyResumClass;
+  history: historyResumClass[];
 
   @Prop({ type: Object })
   createdBy: {
