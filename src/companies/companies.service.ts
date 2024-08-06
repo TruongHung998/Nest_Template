@@ -6,6 +6,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { IUser } from "@/user/users.interface";
 import { Company, CompanyDocument } from "./schema/company.schema";
 import aqp from "api-query-params";
+import { ObjectId } from "mongoose";
 
 @Injectable()
 export class CompaniesService {
@@ -54,14 +55,12 @@ export class CompaniesService {
     }
   }
 
-  findOne(id: string) {
+  findOne(id: ObjectId | string) {
     if (this.checkMatch(id)) {
       const _find = this.companyModel.findById(id);
       return _find;
     } else {
-      return {
-        message: "Không tìm thấy người dùng",
-      };
+      return null
     }
   }
 

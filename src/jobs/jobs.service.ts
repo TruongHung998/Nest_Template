@@ -1,4 +1,4 @@
-import { Injectable, Query } from "@nestjs/common";
+import { BadRequestException, Injectable, Query } from "@nestjs/common";
 import { SoftDeleteModel } from "soft-delete-plugin-mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { IUser } from "@/user/users.interface";
@@ -6,24 +6,35 @@ import aqp from "api-query-params";
 import { CreateJobDto } from "./dto/create-Job.dto";
 import { Job, JobDocument } from "./schemas/job.schema";
 import { UpdateJobDto } from "./dto/update-Job.dto";
+import { CompaniesService } from "@/companies/companies.service";
 
 @Injectable()
 export class JobsService {
   constructor(
     @InjectModel(Job.name)
-    private jobModel: SoftDeleteModel<JobDocument>
+    private jobModel: SoftDeleteModel<JobDocument>,
+    private companiesService: CompaniesService
   ) {}
 
   checkMatch(id) {
     return id.match(/^[0-9a-fA-F]{24}$/);
   }
-  async create(createjobDto: CreateJobDto, user: IUser) {
+  async create(createjobDto: CreateJobDto, user: IUser) {    
+    const _company = await this.companiesService.findOne(createjobDto.company._id);
+    console.log(_company, '_company');
+    if (!_company) {
+      throw new BadRequestException("Công ty không tồn tại");
+    }
     const _create = await this.jobModel.create({
       ...createjobDto,
       createdBy: {
         _id: user._id,
         mail: user.email,
       },
+      company: {
+        _id: _company._id,
+        name: _company.name
+      }
     });
     return _create;
   }

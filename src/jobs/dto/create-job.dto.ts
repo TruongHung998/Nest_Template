@@ -1,3 +1,4 @@
+import { Company } from "@/companies/schema/company.schema";
 import { stringConst } from "@/constants/auth";
 import { IsStartDateBeforeEndDate } from "@/decorator/customize";
 import { Type } from "class-transformer";
@@ -7,7 +8,9 @@ import {
   IsArray,
   IsDate,
   IsNotEmpty,
+  IsNotEmptyObject,
   IsNumber,
+  IsObject,
   IsString,
   ValidateNested,
 } from "class-validator";
@@ -53,4 +56,11 @@ export class CreateJobDto {
 
   @IsNotEmpty({ message: stringConst.requireMessage("isActive") })
   isActive: boolean;
+
+  @IsNotEmptyObject()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => Company)
+  @IsNotEmpty({ message: stringConst.requireMessage("company") })
+  company: Company;
 }
