@@ -4,15 +4,13 @@ import { IsStartDateBeforeEndDate } from "@/decorator/customize";
 import { Type } from "class-transformer";
 import {
   ArrayMinSize,
-  ArrayNotEmpty,
   IsArray,
   IsDate,
   IsNotEmpty,
   IsNotEmptyObject,
   IsNumber,
   IsObject,
-  IsString,
-  ValidateNested,
+  ValidateNested
 } from "class-validator";
 
 export class CreateJobDto {

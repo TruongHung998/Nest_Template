@@ -12,5 +12,6 @@ import { CompaniesModule } from "@/companies/companies.module";
   ],
   controllers: [JobsController],
   providers: [JobsService],
+  exports: [JobsService]
 })
 export class JobsModule {}

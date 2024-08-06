@@ -3,7 +3,7 @@ import mongoose, { HydratedDocument } from "mongoose";
 
 export type ResumeDocument = HydratedDocument<Resume>;
 
-const STATUS_RESUME = {
+export const STATUS_RESUME = {
   pending: "PENDING",
   approved: "APPROVED",
   reviewing: "REVIEWING",

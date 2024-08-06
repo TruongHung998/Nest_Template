@@ -7,6 +7,7 @@ import { CreateJobDto } from "./dto/create-Job.dto";
 import { Job, JobDocument } from "./schemas/job.schema";
 import { UpdateJobDto } from "./dto/update-Job.dto";
 import { CompaniesService } from "@/companies/companies.service";
+import { ObjectId } from "mongoose";
 
 @Injectable()
 export class JobsService {
@@ -19,9 +20,10 @@ export class JobsService {
   checkMatch(id) {
     return id.match(/^[0-9a-fA-F]{24}$/);
   }
-  async create(createjobDto: CreateJobDto, user: IUser) {    
-    const _company = await this.companiesService.findOne(createjobDto.company._id);
-    console.log(_company, '_company');
+  async create(createjobDto: CreateJobDto, user: IUser) {
+    const _company = await this.companiesService.findOne(
+      createjobDto.company._id
+    );
     if (!_company) {
       throw new BadRequestException("Công ty không tồn tại");
     }
@@ -33,8 +35,8 @@ export class JobsService {
       },
       company: {
         _id: _company._id,
-        name: _company.name
-      }
+        name: _company.name,
+      },
     });
     return _create;
   }
@@ -65,7 +67,7 @@ export class JobsService {
     }
   }
 
-  findOne(id: string) {
+  findOne(id: ObjectId | string) {
     if (this.checkMatch(id)) {
       const _find = this.jobModel.findById(id);
       return _find;
