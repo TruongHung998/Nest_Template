@@ -39,20 +39,19 @@ export class PermissionsController {
     return this.permissionsService.findOne(id);
   }
 
-  // @Put(":id")
-  // @ResponseMessage("Update By Id")
-  // update(
-  //   @Param("id") id: string,
-  //   @Body() updatePermissionDto: UpdatePermissionDto,
-  //   @User() user: IUser
-  // ) {
-  //   console.log(updatePermissionDto, "updatePermissionDto");
-  //   return this.permissionsService.update(id, updatePermissionDto, user);
-  // }
+  @Put(":id")
+  @ResponseMessage("Update By Id")
+  update(
+    @Param("id") id: string,
+    @Body() updatePermissionDto: UpdatePermissionDto,
+    @User() user: IUser
+  ) {
+    return this.permissionsService.update(id, updatePermissionDto, user);
+  }
 
-  // @Delete(":id")
-  // @ResponseMessage("Delete By Id")
-  // remove(@Param("id") id: string, @User() user: IUser) {
-  //   return this.permissionsService.remove(id, user);
-  // }
+  @Delete(":id")
+  @ResponseMessage("Delete By Id")
+  remove(@Param("id") id: string, @User() user: IUser) {
+    return this.permissionsService.remove(id, user);
+  }
 }

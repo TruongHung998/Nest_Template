@@ -71,6 +71,15 @@ export class PermissionsService {
     user: IUser
   ) {
     try {
+      const _find = await this.permissionModel.find({
+        name: updatePermissionDto.name,
+        apiPath: updatePermissionDto.apiPath,
+      });
+      if (_find.length > 0) {
+        return {
+          message: "Perrmission tồn tại name hoặc apiPath",
+        };
+      }
       return await this.permissionModel.updateOne(
         { _id: id },
         {
