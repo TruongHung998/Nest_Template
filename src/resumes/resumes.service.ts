@@ -165,7 +165,19 @@ export class ResumesService {
   }
 
   findByUser(id: string) {
-    const _find = this.resumeModel.find({ "createdBy._id": id });
+    const _find = this.resumeModel
+      .find({ "createdBy._id": id })
+      .sort("-createdAt")
+      .populate([
+        {
+          path: "companyId",
+          select: { name: 1 },
+        },
+        {
+          path: "jobId",
+          select: { name: 1 },
+        },
+      ]);
     return _find;
   }
 }

@@ -1,3 +1,5 @@
+import { Company } from "@/companies/schema/company.schema";
+import { Job } from "@/jobs/schemas/job.schema";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose, { HydratedDocument } from "mongoose";
 
@@ -51,11 +53,11 @@ export class Resume {
   @Prop()
   deletedAt: Date;
 
-  @Prop()
-  companyId: mongoose.Schema.Types.ObjectId;
+  @Prop({ type: [mongoose.Types.ObjectId], ref: Company.name })
+  companyId: Company[];
 
-  @Prop()
-  jobId: mongoose.Schema.Types.ObjectId;
+  @Prop({ type: [mongoose.Types.ObjectId], ref: Job.name })
+  jobId: Job[];
 
   @Prop({ type: mongoose.Schema.Types.Array })
   history: historyResumClass[];

@@ -1,5 +1,5 @@
 import { stringConst } from "@/constants/auth";
-import { IsMongoId, IsNotEmpty } from "class-validator";
+import { IsArray, IsMongoId, IsNotEmpty } from "class-validator";
 import mongoose from "mongoose";
 
 export class CreateRoleDto {
@@ -13,6 +13,7 @@ export class CreateRoleDto {
   isActive: boolean;
 
   @IsNotEmpty({ message: stringConst.requireMessage("permission") })
+  @IsArray()
   @IsMongoId({ each: true })
   permission: mongoose.Schema.Types.ObjectId[];
 }

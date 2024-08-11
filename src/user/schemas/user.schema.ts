@@ -1,3 +1,4 @@
+import { Role } from "@/roles/schema/role.schema";
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { IsEmail } from "class-validator";
 import mongoose, { HydratedDocument, SchemaTimestampsConfig } from "mongoose";
@@ -21,8 +22,8 @@ export class User {
   gender: string;
   @Prop()
   address: string;
-  @Prop()
-  role: string;
+  @Prop({ type: mongoose.Types.ObjectId, ref: Role.name })
+  role: mongoose.Types.ObjectId;
   @Prop()
   refreshToken: string;
 

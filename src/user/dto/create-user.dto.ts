@@ -1,6 +1,7 @@
 import { Type } from "class-transformer";
 import {
   IsEmail,
+  IsMongoId,
   IsNotEmpty,
   IsNotEmptyObject,
   IsObject,
@@ -37,7 +38,8 @@ export class RegisterUserDto {
   address: string;
 
   @IsNotEmpty({ message: "Role không được để trống" })
-  role: string;
+  @IsMongoId()
+  role: mongoose.Types.ObjectId;
 
   @IsNotEmptyObject()
   @IsObject()

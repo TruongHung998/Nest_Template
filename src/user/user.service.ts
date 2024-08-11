@@ -39,7 +39,7 @@ export class UserService {
       gender,
       address,
       password: _hash,
-      role: "USER",
+      role: RegisterUserDto.role,
       createdBy: {
         _id: user._id,
         email: user.email,
@@ -61,7 +61,7 @@ export class UserService {
       gender,
       address,
       password: _hash,
-      role: "USER",
+      role: user.role,
     });
     return _user;
   }
@@ -81,7 +81,13 @@ export class UserService {
         .limit(defaultLimit)
         .select("-password")
         // @ts-ignore: Unreachable code error .sort(sort)
-        .populate(population)
+        .populate({
+          path: "role",
+          select: {
+            _id: 1,
+            name: 1,
+          },
+        })
         .exec();
       return {
         length: result.length,
@@ -97,7 +103,15 @@ export class UserService {
     if (this.checkMatch(id)) {
       const _find = this.userModel
         .findById(id)
-        .select(["-password", "-refreshToken"]);
+        .select(["-password", "-refreshToken"])
+        .populate({
+          path: "role",
+          select: {
+            _id: 1,
+            name: 1,
+            permission: 1,
+          },
+        });
       return _find;
     } else {
       return {
@@ -149,7 +163,9 @@ export class UserService {
     }
   }
   findByEmail(email: string) {
-    const _find = this.userModel.findOne({ email });
+    const _find = this.userModel
+      .findOne({ email })
+      .populate({ path: "role", select: { name: 1, permission: 1 } });
     return _find;
   }
   checkPassword(pass: string, userPassword: string): Boolean {

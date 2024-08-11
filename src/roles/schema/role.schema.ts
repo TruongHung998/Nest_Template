@@ -11,8 +11,8 @@ export class Role {
   description: string;
   @Prop()
   isActive: boolean;
-  @Prop({ type: mongoose.Types.ObjectId })
-  permission: Permission;
+  @Prop({ type: [mongoose.Types.ObjectId], ref: Permission.name })
+  permission: Permission[];
   //Const Field
 
   @Prop()
