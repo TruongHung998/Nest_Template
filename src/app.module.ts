@@ -16,7 +16,7 @@ import { ResumesModule } from "./resumes/resumes.module";
 import { PermissionsModule } from "./permissions/permissions.module";
 import { RolesModule } from "./roles/roles.module";
 import { UserPgModule } from "./user-pg/user.module";
-
+import { User } from "./user-pg/entities/user.entity";
 @Module({
   imports: [
     MongooseModule.forRootAsync({
@@ -39,6 +39,7 @@ import { UserPgModule } from "./user-pg/user.module";
         username: configService.get<string>("POSTGRES_USER"),
         password: configService.get<string>("POSTGRES_PASSWORD"),
         database: configService.get<string>("POSTGRES_DATABASE"),
+        entities: [User], // here we have added user enitity in entities array
         autoLoadEntities: true,
         synchronize: true,
       }),
