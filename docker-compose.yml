@@ -1,0 +1,29 @@
+services:
+  mongodb:
+    image: mongo:4.4
+    container_name: mongodb-dev
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+      MONGO_INITDB_DATABASE: mongodev
+    ports:
+      - 27018:27017
+    volumes:
+      - mongodb_data_container:/data/db
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: ecommerce
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+#
+volumes:
+  mongodb_data_container:
+  postgres_data:
+
+# docker compose -p dev-registry up -d

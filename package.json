@@ -30,6 +30,7 @@
     "@nestjs/mongoose": "^10.0.6",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/typeorm": "^10.0.2",
     "api-query-params": "^5.4.0",
     "bcryptjs": "^2.4.3",
     "bson": "^6.8.0",
@@ -41,9 +42,11 @@
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "pg": "^8.13.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
-    "soft-delete-plugin-mongoose": "^1.0.17"
+    "soft-delete-plugin-mongoose": "^1.0.17",
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
