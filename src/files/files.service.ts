@@ -1,26 +1,19 @@
-import { Injectable } from '@nestjs/common';
-import { CreateFileDto } from './dto/create-file.dto';
-import { UpdateFileDto } from './dto/update-file.dto';
+import { Injectable } from "@nestjs/common";
+import { MinioServiceLocal } from "../minio/minio.service";
+import { BufferedFile } from "./file.model";
 
 @Injectable()
 export class FilesService {
-  create(createFileDto: CreateFileDto) {
-    return 'This action adds a new file';
+  constructor(private readonly minioService: MinioServiceLocal) {}
+
+  async uploadFile(image: BufferedFile) {
+    let uploaded_image = await this.minioService.upload(image, "image");
+
+    return {
+      image_url: uploaded_image.url,
+      message: "Successfully uploaded to MinIO S3",
+    };
   }
 
-  findAll() {
-    return `This action returns all files`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} file`;
-  }
-
-  update(id: number, updateFileDto: UpdateFileDto) {
-    return `This action updates a #${id} file`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} file`;
-  }
+  // Add other methods as needed
 }

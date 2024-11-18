@@ -17,5 +17,8 @@ export class User {
   @Column()
   lastName: string;
 
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  createdAt: Date;
+
   // Add other fields as necessary
 }

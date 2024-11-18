@@ -17,6 +17,7 @@ import { PermissionsModule } from "./permissions/permissions.module";
 import { RolesModule } from "./roles/roles.module";
 import { UserPgModule } from "./user-pg/user.module";
 import { User } from "./user-pg/entities/user.entity";
+import { MinioClientModule } from "./minio/minio-client.module";
 @Module({
   imports: [
     MongooseModule.forRootAsync({
@@ -39,7 +40,7 @@ import { User } from "./user-pg/entities/user.entity";
         username: configService.get<string>("POSTGRES_USER"),
         password: configService.get<string>("POSTGRES_PASSWORD"),
         database: configService.get<string>("POSTGRES_DATABASE"),
-        entities: [User], // here we have added user enitity in entities array
+        entities: [User], // here we have added user entity in entities array
         autoLoadEntities: true,
         synchronize: true,
       }),
@@ -49,6 +50,7 @@ import { User } from "./user-pg/entities/user.entity";
       envFilePath: ".env",
       isGlobal: true,
     }),
+    MinioClientModule,
     UserModule,
     AuthModule,
     CompaniesModule,
