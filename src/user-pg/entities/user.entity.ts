@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class User {
@@ -9,16 +9,32 @@ export class User {
   username: string;
 
   @Column()
-  email: string;
+  password: string;
 
   @Column()
-  firstName: string;
+  avatarUrl: string;
 
   @Column()
-  lastName: string;
+  fullName: string;
+
+  @Column()
+  address: string;
 
   @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;
+
+  @Column()
+  createdBy: string;
+
+  @Column({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
+    onUpdate: "CURRENT_TIMESTAMP",
+  })
+  updatedAt: Date;
+
+  @Column()
+  updatedBy: string;
 
   // Add other fields as necessary
 }
