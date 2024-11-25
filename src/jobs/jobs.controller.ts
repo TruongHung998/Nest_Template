@@ -11,8 +11,8 @@ import {
   Put,
   Query,
 } from "@nestjs/common";
-import { CreateJobDto } from "./dto/create-Job.dto";
-import { UpdateJobDto } from "./dto/update-Job.dto";
+import { CreateJobDto } from "./dto/create-job.dto";
+import { UpdateJobDto } from "./dto/update-job.dto";
 import { JobsService } from "./jobs.service";
 
 @Controller("jobs")

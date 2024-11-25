@@ -36,7 +36,9 @@ services:
     command: server /data
 
   nestjs:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: nestjs-app
     env_file:
       - .env

@@ -3,9 +3,9 @@ import { SoftDeleteModel } from "soft-delete-plugin-mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { IUser } from "@/user/users.interface";
 import aqp from "api-query-params";
-import { CreateJobDto } from "./dto/create-Job.dto";
+import { CreateJobDto } from "./dto/create-job.dto";
 import { Job, JobDocument } from "./schemas/job.schema";
-import { UpdateJobDto } from "./dto/update-Job.dto";
+import { UpdateJobDto } from "./dto/update-job.dto";
 import { CompaniesService } from "@/companies/companies.service";
 import { ObjectId } from "mongoose";
 
