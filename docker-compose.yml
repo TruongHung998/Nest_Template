@@ -1,11 +1,11 @@
 services:
   mongodb:
     image: mongo:4.4
-    container_name: mongodb-dev
+    container_name: mongodb
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: 123456
-      MONGO_INITDB_DATABASE: mongodev
+      MONGO_INITDB_DATABASE: ecommerce
     ports:
       - 27018:27017
     volumes:
@@ -40,8 +40,25 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: nestjs-app
-    env_file:
-      - .env
+    environment:
+      - MONGO_DB=mongodb://root:123456@mongodb:27017/ecommerce?authSource=admin
+      - JWT_SECRET=secret
+      - JWT_EXPIRATION=1d
+
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=ecommerce
+
+      - MINIO_ENDPOINT=localhost
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_PORT=9000
+      - MINIO_USE_SSL=false
+      
+      - JWT_REFRESH_SECRET=JUSTASECRECT
+      - EXPIRE_REFRESH_JWT=1d
     ports:
       - "3001:3001"
     depends_on:

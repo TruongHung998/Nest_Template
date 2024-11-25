@@ -13,13 +13,14 @@ import { RolesService } from "./roles.service";
 import { CreateRoleDto } from "./dto/create-role.dto";
 import { UpdateRoleDto } from "./dto/update-role.dto";
 import { IUser } from "@/user/users.interface";
-import { ResponseMessage, User } from "@/decorator/customize";
+import { Public, ResponseMessage, User } from "@/decorator/customize";
 
 @Controller("roles")
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Post()
+  @Public()
   @ResponseMessage("Create")
   create(@Body() createRoleDto: CreateRoleDto, @User() user: IUser) {
     return this.rolesService.create(createRoleDto, user);
