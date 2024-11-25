@@ -10,6 +10,7 @@ services:
       - 27018:27017
     volumes:
       - mongodb_data_container:/data/db
+
   postgres:
     image: postgres:latest
     container_name: postgres
@@ -21,6 +22,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
   minio:
     image: minio/minio:latest
     container_name: minio
@@ -32,9 +34,20 @@ services:
     volumes:
       - minio_data:/data
     command: server /data
+
+  nestjs:
+    build: .
+    container_name: nestjs-app
+    env_file:
+      - .env
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongodb
+      - postgres
+      - minio
+
 volumes:
   mongodb_data_container:
   postgres_data:
   minio_data:
-
-# docker compose -p dev-registry up -d
