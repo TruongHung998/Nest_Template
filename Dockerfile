@@ -1,5 +1,5 @@
-# Use the official Node.js image as the base image
-FROM node:18.13.0
+# Base stage
+FROM node:18.13.0 AS base
 
 # Set the working directory inside the container
 WORKDIR /usr/src/app
@@ -12,6 +12,27 @@ RUN yarn
 
 # Copy the rest of the application code to the working directory
 COPY . .
+
+# Build stage for production
+FROM base AS production
+
+# Set environment variables for production
+ENV NODE_ENV=production
+
+# Build the NestJS application
+RUN yarn build
+
+# Expose the port the app runs on
+EXPOSE 3002
+
+# Start the NestJS application
+CMD [ "node", "dist/main.js" ]
+
+# Build stage for staging
+FROM base AS staging
+
+# Set environment variables for staging
+ENV NODE_ENV=staging
 
 # Build the NestJS application
 RUN yarn build

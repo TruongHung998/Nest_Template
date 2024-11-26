@@ -1,11 +1,11 @@
 services:
   mongodb:
     image: mongo:4.4
-    container_name: mongodb
+    container_name: mongodb-dev
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: 123456
-      MONGO_INITDB_DATABASE: ecommerce
+      MONGO_INITDB_DATABASE: mongodev
     ports:
       - 27018:27017
     volumes:
@@ -35,36 +35,35 @@ services:
       - minio_data:/data
     command: server /data
 
-  nestjs:
+  nestjs-staging:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: nestjs-app
-    environment:
-      - MONGO_DB=mongodb://root:123456@mongodb:27017/ecommerce?authSource=admin
-      - JWT_SECRET=secret
-      - JWT_EXPIRATION=1d
-
-      - POSTGRES_HOST=postgres
-      - POSTGRES_PORT=5432
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=123456
-      - POSTGRES_DB=ecommerce
-
-      - MINIO_ENDPOINT=localhost
-      - MINIO_ACCESS_KEY=minioadmin
-      - MINIO_SECRET_KEY=minioadmin
-      - MINIO_PORT=9000
-      - MINIO_USE_SSL=false
-      
-      - JWT_REFRESH_SECRET=JUSTASECRECT
-      - EXPIRE_REFRESH_JWT=1d
+      target: staging
+    container_name: nestjs-staging
+    env_file:
+      - .env.staging
     ports:
       - "3001:3001"
     depends_on:
       - mongodb
       - postgres
       - minio
+
+  # nestjs-production:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     target: production
+  #   container_name: nestjs-production
+  #   env_file:
+  #     - .env.production
+  #   ports:
+  #     - "3002:3002"
+  #   depends_on:
+  #     - mongodb
+  #     - postgres
+  #     - minio
 
 volumes:
   mongodb_data_container:
