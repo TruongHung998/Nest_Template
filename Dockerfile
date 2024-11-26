@@ -23,7 +23,7 @@ ENV NODE_ENV=production
 RUN yarn build
 
 # Expose the port the app runs on
-EXPOSE 3002
+EXPOSE 3001
 
 # Start the NestJS application
 CMD [ "node", "dist/main.js" ]
