@@ -1,21 +1,18 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class User {
+export class Permission {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
   @Column()
-  username: string;
+  name: string;
 
   @Column()
-  password: string;
+  description: string;
 
-  @Column()
-  avatarUrl: string;
-
-  @Column()
-  fullName: string;
+  @Column({ default: true })
+  isActive: boolean;
 
   // Default field
 

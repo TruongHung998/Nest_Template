@@ -13,6 +13,8 @@ import {
 import { CreatePermissionDto } from "./dto/create-permission.dto";
 import { UpdatePermissionDto } from "./dto/update-permission.dto";
 import { PermissionsService } from "./permissions.service";
+import { ApiQueryParams } from 'nestjs-api-query-params';
+import { Permission } from './entities/permission.entity';
 
 @Controller("permissions")
 export class PermissionsController {
@@ -29,8 +31,8 @@ export class PermissionsController {
 
   @Get()
   @ResponseMessage("Get List")
-  findAll(@Query() qs: string) {
-    return this.permissionsService.findAll(qs);
+  async findAll(@Query() query: ApiQueryParams): Promise<Permission[]> {
+    return this.permissionsService.findAll(query);
   }
 
   @Get(":id")

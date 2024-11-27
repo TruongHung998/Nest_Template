@@ -1,16 +1,22 @@
-import { stringConst } from "@/constants/auth";
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsString, IsBoolean, IsOptional } from "class-validator";
 
 export class CreatePermissionDto {
-  @IsNotEmpty({ message: stringConst.requireMessage("name") })
+  @IsNotEmpty()
+  @IsString()
   name: string;
 
-  @IsNotEmpty({ message: stringConst.requireMessage("apiPath") })
-  apiPath: string;
+  @IsNotEmpty()
+  @IsString()
+  description: string;
 
-  @IsNotEmpty({ message: stringConst.requireMessage("method") })
-  method: string;
+  @IsBoolean()
+  isActive: boolean;
 
-  @IsNotEmpty({ message: stringConst.requireMessage("module") })
-  module: string;
+  @IsOptional()
+  @IsString()
+  createdBy?: string;
+
+  @IsOptional()
+  @IsString()
+  updatedBy?: string;
 }

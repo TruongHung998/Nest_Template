@@ -1,6 +1,19 @@
-import { OmitType, PartialType } from "@nestjs/mapped-types";
-import { CreatePermissionDto } from "./create-permission.dto";
+import { IsBoolean, IsOptional, IsString } from "class-validator";
 
-export class UpdatePermissionDto extends PartialType(CreatePermissionDto) {
-  _id: string;
+export class UpdatePermissionDto {
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
+
+  @IsOptional()
+  @IsString()
+  updatedBy?: string;
 }
