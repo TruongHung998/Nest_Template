@@ -1,27 +1,38 @@
-import { NestFactory, Reflector } from "@nestjs/core";
+import { configSwagger } from "@configs/api-docs.config";
+import { Logger, ValidationPipe, VersioningType } from "@nestjs/common";
+import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
-import { ValidationPipe, VersioningType } from "@nestjs/common";
-import { TransformInterceptor } from "./core/transform.interceptor";
 import cookieParser = require("cookie-parser");
-import * as bodyParser from 'body-parser';
+
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from "@nestjs/platform-fastify";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const reflector = app.get(Reflector);
-  app.useGlobalPipes(new ValidationPipe());
-  app.enableCors();
-  app.useGlobalInterceptors(new TransformInterceptor(reflector));
-  app.setGlobalPrefix("api");
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter({ logger: true })
+  );
 
-  // Use body parser middleware
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
+  //Setup Cors
+  app.enableCors();
+
+  //Setup Versioning API
+  app.setGlobalPrefix("api");
+  app.enableVersioning({
+    type: VersioningType.URI,
+    prefix: "v",
+    defaultVersion: "1",
+  });
+  app.useGlobalPipes(new ValidationPipe());
 
   app.use(cookieParser());
-  app.enableVersioning({
-    defaultVersion: ["1", "2"],
-    type: VersioningType.URI,
-  });
-  await app.listen(3001);
+
+  //Setup Swaggers
+  configSwagger(app, process.env.SWAGGER_USERNAME, process.env.SWAGGER_PASSWORD);
+
+  Logger.log(`---> Get: ${process.env.NODE_ENV}`, "Environment");
+  await app.listen(process.env.PORT, "0.0.0.0");
 }
 bootstrap();

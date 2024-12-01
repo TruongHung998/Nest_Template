@@ -1,20 +1,21 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { TypeOrmModule } from "@nestjs/typeorm";
+import { APP_FILTER, APP_GUARD } from "@nestjs/core";
 import { MongooseModule } from "@nestjs/mongoose";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { softDeletePlugin } from "soft-delete-plugin-mongoose";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-import { UserModule } from "./user/user.module";
-import { AuthModule } from "./auth/auth.module";
-import { APP_GUARD } from "@nestjs/core";
-import { JwtAuthGuard } from "./auth/jwt-auth.guard";
-import { softDeletePlugin } from "soft-delete-plugin-mongoose";
-import { FilesModule } from "./files/files.module";
-import { PermissionsModule } from "./permissions/permissions.module";
-import { RolesModule } from "./roles/roles.module";
-import { UserPgModule } from "./user-pg/user.module";
-import { User } from "./user-pg/entities/user.entity";
-import { MinioClientModule } from "./minio/minio-client.module";
+import { GlobalExceptionFilter } from "./exception-filters/global-exception.filter";
+import { AuthModule } from "./modules/auth/auth.module";
+import { JwtAuthGuard } from "./modules/auth/jwt-auth.guard";
+import { FilesModule } from "./modules/files/files.module";
+import { MinioClientModule } from "./modules/minio/minio-client.module";
+import { PermissionsModule } from "./modules/permissions/permissions.module";
+import { RolesModule } from "./modules/roles/roles.module";
+import { SearchModule } from "./modules/search/search.module";
+import { UsersModule } from "./modules/users/users.module";
+import { CaslModule } from "./modules/casl/casl.module";
 @Module({
   imports: [
     MongooseModule.forRootAsync({
@@ -30,30 +31,22 @@ import { MinioClientModule } from "./minio/minio-client.module";
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        type: "postgres",
-        host: configService.get<string>("POSTGRES_HOST"),
-        port: configService.get<number>("POSTGRES_PORT"),
-        username: configService.get<string>("POSTGRES_USER"),
-        password: configService.get<string>("POSTGRES_PASSWORD"),
-        database: configService.get<string>("POSTGRES_DATABASE"),
-        entities: [__dirname + "/**/*.entity{.ts,.js}"],
-        autoLoadEntities: true,
-        synchronize: true,
-      }),
       inject: [ConfigService],
+      useFactory: (configService: ConfigService) =>
+        configService.get("typeorm"),
     }),
     ConfigModule.forRoot({
       envFilePath: ".env",
       isGlobal: true,
     }),
-    MinioClientModule,
-    UserModule,
+    UsersModule,
     AuthModule,
-    FilesModule,
-    PermissionsModule,
     RolesModule,
-    UserPgModule,
+    PermissionsModule,
+    SearchModule,
+    CaslModule,
+    MinioClientModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [
@@ -61,6 +54,10 @@ import { MinioClientModule } from "./minio/minio-client.module";
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter,
     },
   ],
 })
