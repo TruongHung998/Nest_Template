@@ -19,20 +19,23 @@ import { CaslModule } from "./modules/casl/casl.module";
 import { RedisOptions } from "./config/redis.config";
 import { CacheModule } from "@nestjs/cache-manager";
 import { UtilsModule } from "./utils/utils.module";
+import typeorm from './config/typeorm';
+import configuration from './config/configuration';
+import * as Joi from 'joi';
 
 @Module({
   imports: [
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>("MONGO_DB"),
-        connectionFactory: (connection) => {
-          connection.plugin(softDeletePlugin);
-          return connection;
-        },
-      }),
-      inject: [ConfigService],
-    }),
+		ConfigModule.forRoot({
+			validationSchema: Joi.object({
+				NODE_ENV: Joi.string()
+					.valid('develop', 'production', 'test', 'staging')
+					.default('develop'),
+				PORT: Joi.number().default(3000),
+			}),
+			load: [configuration, typeorm],
+			cache: true,
+			expandVariables: true,
+		}),
 
     CacheModule.registerAsync(RedisOptions),
 
