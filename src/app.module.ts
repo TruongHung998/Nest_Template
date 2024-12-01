@@ -16,6 +16,10 @@ import { RolesModule } from "./modules/roles/roles.module";
 import { SearchModule } from "./modules/search/search.module";
 import { UsersModule } from "./modules/users/users.module";
 import { CaslModule } from "./modules/casl/casl.module";
+import { RedisOptions } from "./config/redis.config";
+import { CacheModule } from "@nestjs/cache-manager";
+import { UtilsModule } from "./utils/utils.module";
+
 @Module({
   imports: [
     MongooseModule.forRootAsync({
@@ -29,6 +33,9 @@ import { CaslModule } from "./modules/casl/casl.module";
       }),
       inject: [ConfigService],
     }),
+
+    CacheModule.registerAsync(RedisOptions),
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -45,8 +52,9 @@ import { CaslModule } from "./modules/casl/casl.module";
     PermissionsModule,
     SearchModule,
     CaslModule,
-    MinioClientModule,
+    UtilsModule,
     FilesModule,
+    MinioClientModule,
   ],
   controllers: [AppController],
   providers: [
