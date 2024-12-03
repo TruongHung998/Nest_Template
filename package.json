@@ -19,7 +19,12 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "create-model": "nest g resource users --no-spec",
-    "nodeVersion": "nvm use 18.17.0"
+    "nodeVersion": "nvm use 18.17.0",
+    "typeorm": "ts-node ./node_modules/typeorm/cli",
+    "migration:run": "npm run typeorm migration:run -- -d ./src/config/typeorm.ts",
+    "migration:generate": "cross-var npm run typeorm -- -d ./src/config/typeorm.ts migration:generate ./src/database/migrations/$npm_config_name",
+    "migration:create": "cross-var npm run typeorm -- migration:create ./src/database/migrations/$npm_config_name",
+    "migration:revert": "npm run typeorm -- -d ./src/config/typeorm.ts migration:revert"
   },
   "dependencies": {
     "@casl/ability": "^6.7.0",

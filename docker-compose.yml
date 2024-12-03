@@ -27,7 +27,7 @@ services:
     image: redis:6.2-alpine
     restart: always
     ports:
-      - '6379:6379'
+      - "6379:6379"
     command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
     volumes:
       - cache:/data
@@ -39,7 +39,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
     environment:
       - xpack.security.enabled=false
-      - 'discovery.type=single-node'
+      - "discovery.type=single-node"
     networks:
       - app-network
     ports:
@@ -49,12 +49,12 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
+          cpus: "0.50"
           memory: 1000M
         reservations:
-          cpus: '0.25'
+          cpus: "0.25"
           memory: 1000M
-  
+
   kibana:
     container_name: kb-container
     image: docker.elastic.co/kibana/kibana:8.13.0
@@ -69,10 +69,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.50'
+          cpus: "0.50"
           memory: 1000M
         reservations:
-          cpus: '0.25'
+          cpus: "0.25"
           memory: 1000M
 
   minio:
@@ -86,24 +86,6 @@ services:
     volumes:
       - minio_data:/data
     command: server /data
-
-  nestjs-staging:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: staging
-    container_name: nestjs-staging
-    env_file:
-      - .env.staging
-    ports:
-      - "3001:3001"
-    depends_on:
-      - mongodb
-      - postgres
-      - minio
-      - cache
-      - elasticsearch
-      - kibana
 
   # nestjs-production:
   #   build:

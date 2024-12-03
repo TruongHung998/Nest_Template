@@ -34,11 +34,13 @@ FROM base AS staging
 # Set environment variables for staging
 ENV NODE_ENV=staging
 
-# Build the NestJS application
-RUN yarn build
+ENV NODE_ENV=development
+
+# Install development dependencies
+RUN yarn install --frozen-lockfile
 
 # Expose the port the app runs on
 EXPOSE 3001
 
-# Start the NestJS application
-CMD [ "node", "dist/main.js" ]
+# Start the NestJS application in development mode
+CMD [ "yarn", "start:dev" ]
