@@ -1,46 +1,23 @@
-# Base stage
-FROM node:18.13.0 AS base
+# Sử dụng image Node.js
+FROM node:18.17.0
 
-# Set the working directory inside the container
-WORKDIR /usr/src/app
+# Thiết lập thư mục làm việc
+WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
+# Sao chép file package.json và package-lock.json
 COPY package*.json ./
 
-# Install app dependencies
-RUN yarn
+# Cài đặt các phụ thuộc
+RUN yarn install
 
-# Copy the rest of the application code to the working directory
+# Sao chép toàn bộ mã nguồn
 COPY . .
 
-# Build stage for production
-FROM base AS production
+# Build ứng dụng
+RUN yarn run build
 
-# Set environment variables for production
-ENV NODE_ENV=production
+# Expose cổng mà ứng dụng sẽ chạy
+EXPOSE 3000
 
-# Build the NestJS application
-RUN yarn build
-
-# Expose the port the app runs on
-EXPOSE 3001
-
-# Start the NestJS application
-CMD [ "node", "dist/main.js" ]
-
-# Build stage for staging
-FROM base AS staging
-
-# Set environment variables for staging
-ENV NODE_ENV=staging
-
-ENV NODE_ENV=development
-
-# Install development dependencies
-RUN yarn install --frozen-lockfile
-
-# Expose the port the app runs on
-EXPOSE 3001
-
-# Start the NestJS application in development mode
-CMD [ "yarn", "start:dev" ]
+# Lệnh chạy ứng dụng
+CMD ["yarn", "run", "start:prod"]

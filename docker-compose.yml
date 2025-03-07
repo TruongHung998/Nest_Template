@@ -11,7 +11,7 @@ services:
     volumes:
       - mongodb_data_container:/data/db
 
-  postgres:
+  postgres-nest:
     image: postgres:latest
     container_name: postgres
     environment:
@@ -75,7 +75,7 @@ services:
           cpus: "0.25"
           memory: 1000M
 
-  minio:
+  minio-nest:
     image: minio/minio:latest
     container_name: minio
     environment:
@@ -86,21 +86,6 @@ services:
     volumes:
       - minio_data:/data
     command: server /data
-
-  # nestjs-production:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #     target: production
-  #   container_name: nestjs-production
-  #   env_file:
-  #     - .env.production
-  #   ports:
-  #     - "3002:3002"
-  #   depends_on:
-  #     - mongodb
-  #     - postgres
-  #     - minio
 
 volumes:
   mongodb_data_container:
