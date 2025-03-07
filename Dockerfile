@@ -8,16 +8,16 @@ WORKDIR /app
 COPY package*.json ./
 
 # Cài đặt các phụ thuộc
-RUN npm install
+RUN yarn install
 
 # Sao chép toàn bộ mã nguồn
 COPY . .
 
 # Build ứng dụng
-RUN npm run build
+RUN yarn run build
 
 # Expose cổng mà ứng dụng sẽ chạy
 EXPOSE 3000
 
 # Lệnh chạy ứng dụng
-CMD ["npm", "run", "start:prod"]
+CMD ["yarn", "run", "start:prod"]

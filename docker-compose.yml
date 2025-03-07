@@ -87,21 +87,6 @@ services:
       - minio_data:/data
     command: server /data
 
-  # nestjs-production:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #     target: production
-  #   container_name: nestjs-production
-  #   env_file:
-  #     - .env.production
-  #   ports:
-  #     - "3002:3002"
-  #   depends_on:
-  #     - mongodb
-  #     - postgres
-  #     - minio
-
 volumes:
   mongodb_data_container:
   postgres_data:
