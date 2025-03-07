@@ -11,7 +11,7 @@ services:
     volumes:
       - mongodb_data_container:/data/db
 
-  postgres:
+  postgres-nest:
     image: postgres:latest
     container_name: postgres
     environment:
@@ -75,7 +75,7 @@ services:
           cpus: "0.25"
           memory: 1000M
 
-  minio:
+  minio-nest:
     image: minio/minio:latest
     container_name: minio
     environment:
