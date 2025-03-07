@@ -1,5 +1,5 @@
 # Sử dụng image Node.js
-FROM node:17.9.1
+FROM node:18.17.0
 
 # Thiết lập thư mục làm việc
 WORKDIR /app
